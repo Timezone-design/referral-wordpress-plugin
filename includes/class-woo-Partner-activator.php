@@ -3,7 +3,7 @@
 /**
  * Fired during plugin activation
  *
- * @link       http://example.com
+ * @link       http://blu.com
  * @since      1.0.0
  *
  * @package    Woo_Partner
@@ -42,7 +42,7 @@ class Woo_Partner_Activator {
 		
 		$sql = "CREATE TABLE IF NOT EXISTS $table_name (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 		`user_id` INT (20) NOT NULL,
-		`referal_link` VARCHAR (100) NOT NULL,
+		`referral_link` VARCHAR (100) NOT NULL,
 		`product_link` VARCHAR (100) NOT NULL,
 		`used_times` INT (4) ZEROFILL NOT NULL,
 		`enabled` BOOLEAN NOT NULL,

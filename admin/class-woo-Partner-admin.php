@@ -3,7 +3,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       http://example.com
+ * @link       http://blu.com
  * @since      1.0.0
  *
  * @package    Woo_Partner
@@ -20,6 +20,7 @@
  * @subpackage Woo_Partner/admin
  * @author     Your Name <email@example.com>
  */
+
 class Woo_Partner_Admin {
 
 	/**
@@ -43,8 +44,6 @@ class Woo_Partner_Admin {
 	/**
 	 * Other public variables
 	 */
-	public $wooPartner_in_db;
-	public $WooBtn = "";
 
 
 	/**
@@ -73,14 +72,6 @@ class Woo_Partner_Admin {
             return;
 		}
 
-	}
-
-	function getAttrKey() {
-		$add = $this->attrId;
-		foreach ( $this->address as $k => $val ) {
-			$add .= "&$k=".$val;
-		}
-		return $add;
 	}
 
 	/**
@@ -139,67 +130,49 @@ class Woo_Partner_Admin {
 			__('WooPartner'), 
 			__('WooPartner'), 
 			'manage_options', 
-			'wooParnter', 
-			array( &$this, 'woocommerce_wooP_page' ), 
+			'wooPartner', 
+			array( &$this, 'woo_Partner_admin_page' ), 
 			"dashicons-cart",
 			1000
 
 		);
 	}
 
-	public function woocommerce_wooP_page() {
+	public function woo_Partner_admin_page() {
+        
+		$referral_info_table_data = $this->woo_Partner_get_ref_info();
+		$username_list = json_decode(json_encode($this->woo_Partner_get_distinct_username_list()), true);
+		// die($username_list[0]->user_id);
+		$user_selector = $this->woo_Partner_show_selector_from_list($username_list);
 
-        global $wcps_url_plugin;
-		
-		$_this = $this;
-		$wooP  = $this->saveDate();
 		include_once("partials/woo-Partner-admin-display.php");
     }
 
-	public function saveDate() {
+	public function woo_Partner_get_ref_info() {
 
-        $this->wooP_in_db = get_option("wc_wooP");
-		// echo $this->wooP_in_db;
-		$this->downloadeBtn   = str_replace('\\',"",get_option("wc_wooP_downloadeBtn"));
-		$this->WooBtn         = str_replace('\\',"",get_option("wc_wooP_WooBtn"));
-		
-        if(isset($_POST['wooP'])) {
-			// echo "post-wooP is set.";
-            $wooP = $_POST['wooP'];
-			
-            if(is_array($this->wooP_in_db)){
-                update_option("wc_wooP",$wooP);
-            }else{
-                add_option("wc_wooP",$wooP);
-            }
+		global $wpdb;
 
-        }else{
-            if(is_array($this->wooP_in_db)){
-                $wooP = $this->wooP_in_db;
-            }else{
-                $wooP = array("produkt-ID" => array(""), "post-ID" => array(""));
-                add_option("wc_wooP",$wooP);
-            }
-        }
-		
-		if(isset($_POST["downloadeBtn"])){
-        	update_option("wc_wooP_downloadeBtn",$_POST["downloadeBtn"]);
-			$this->WooBtn = $_POST["downloadeBtn"];
-		}elseif(!isset($this->downloadeBtn)){
-			$this->downloadeBtn = $this->downloadeBtnDefault;
-			add_option("wc_wooP_downloadeBtn",$_POST["downloadeBtn"]);
-		}
-		
-		if(isset($_POST["WooBtn"])){
-        	update_option("wc_wooP_WooBtn",$_POST["WooBtn"]);
-			$this->WooBtn = $_POST["WooBtn"];
-		}elseif(!isset($this->WooBtn)){
-			$this->WooBtn = $this->WooBtnDefault;
-			add_option("wc_wooP_WooBtn",$_POST["WooBtn"]);
-		}
+		$ref_info = $wpdb->get_results("SELECT * FROM `wp_referral_info`");
+		return $ref_info;
+	}
 
-        return $wooP;
-    }
+	public function woo_Partner_get_distinct_username_list() {
+
+		global $wpdb;
+
+		$ref_info = $wpdb->get_results("SELECT DISTINCT `user_id` FROM `wp_referral_info` ORDER BY `user_id`");
+		// die($ref_info);
+		return $ref_info;
+	}
+
+	public function woo_Partner_show_selector_from_list($list) {
+		$html = '<select name="user_selector" id="user_selector">';
+			foreach ($list as $iter => $val) {
+				$html = $html . '<option value="' . ($iter + 1) . '">' . ($iter + 1) . '</option>';
+			}
+		$html = $html . '</select>';
+		return $html;
+	}
 
 	public function woo_Partner_write_referral_url_into_db() {
 
@@ -207,8 +180,14 @@ class Woo_Partner_Admin {
 		add_action( 'admin_post_custom_form_action', '_handle_form_action' );
 
 		function _handle_form_action() {
-			die($_POST);
-			wp_redirect( admin_url('admin.php?page=wooparter') );
+			global $wpdb;
+			// var_dump($wpdb);
+			// die('ok');
+			$user_id = $_POST["user_selector"];
+			$product_link = $_POST["new_link"];
+			$referral_link = md5($product_link);
+			$wpdb->insert( "wp_referral_info", array("user_id" => $user_id, "referral_link" => $referral_link, "product_link" => $product_link, "used_times" => 0, "enabled" => 1), array("%d", "%s", "%s", "%d", "%d") );
+			wp_redirect( admin_url('admin.php?page=wooPartner') );
 			exit;
 		}
 	}

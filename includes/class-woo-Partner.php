@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       http://example.com
+ * @link       http://blu.com
  * @since      1.0.0
  *
  * @package    Woo_Partner
@@ -158,7 +158,7 @@ class Woo_Partner {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
 		$plugin_admin->woo_Partner_write_referral_url_into_db();
-		
+
 	}
 
 	/**

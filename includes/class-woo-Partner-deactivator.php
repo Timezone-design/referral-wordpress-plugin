@@ -3,7 +3,7 @@
 /**
  * Fired during plugin deactivation
  *
- * @link       http://example.com
+ * @link       http://blu.com
  * @since      1.0.0
  *
  * @package    Woo_Partner
