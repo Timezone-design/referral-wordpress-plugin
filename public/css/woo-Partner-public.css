@@ -2,3 +2,12 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+
+.ref-data {
+    z-index: 100;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1%;
+    white-space: nowrap;
+}

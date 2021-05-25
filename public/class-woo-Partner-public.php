@@ -106,12 +106,11 @@ class Woo_Partner_Public {
 
 	// }
 
-	// public function woo_Partner_shortcode_generator() {
+	public function woo_Partner_shortcode_generator() {
 		
-	// 	include_once "partials/woo-Partner-public-display.php";
+		include_once "partials/woo-Partner-public-display.php";
 
-	// 	return $content;
-	// }
+	}
 	
 	public function get_referral_link_by_user_id($id)
 	{
@@ -141,7 +140,7 @@ class Woo_Partner_Public {
 
 			}
 			
-			wp_redirect( admin_url($_POST['current-url']) );
+			wp_redirect( get_site_url($_POST['current-url']) );
 			exit;
 		}
 	}

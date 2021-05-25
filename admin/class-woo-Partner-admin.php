@@ -142,6 +142,7 @@ class Woo_Partner_Admin {
         
 		$referral_info_table_data = $this->woo_Partner_get_ref_info();
 		$username_list = json_decode(json_encode($this->woo_Partner_get_distinct_username_list()), true);
+		// var_dump($username_list);
 		// die($username_list[0]->user_id);
 		$user_selector = $this->woo_Partner_show_selector_from_list($username_list);
 
@@ -151,12 +152,13 @@ class Woo_Partner_Admin {
 	public function woo_Partner_get_ref_info() {
 
 		global $wpdb;
-
+		$table_name1 = $wpdb->prefix . 'users';
+		$table_name2 = $wpdb->prefix . 'referral_info';
 		// $ref_info = $wpdb->get_results("SELECT * FROM `wp_referral_info`");
 		$ref_info = $wpdb->get_results(
 			"SELECT a.ID AS user_id, b.id AS ref_id, a.user_nicename, a.display_name, b.referral_link, b.product_link, b.used_times, b.enabled
-			FROM `wp_users` AS a 
-			INNER JOIN `wp_referral_info` AS b
+			FROM " . $table_name1 . " AS a 
+			INNER JOIN " . $table_name2 . " AS b
 			ON a.ID = b.user_id
 			ORDER BY a.ID"
 		);
@@ -167,18 +169,28 @@ class Woo_Partner_Admin {
 
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . 'referral_info';
-		$ref_info = $wpdb->get_results("SELECT DISTINCT `user_id` FROM " . $table_name . " ORDER BY `user_id`");
-		// die($ref_info);
+		$table_name = $wpdb->prefix . 'users';
+		$ref_info = $wpdb->get_results("SELECT `user_nicename`, `ID` FROM " . $table_name . " ORDER BY `ID`");
 		return $ref_info;
 	}
 
 	public function woo_Partner_show_selector_from_list($list) {
+
+		// global $wpdb;
+		// $table_name = $wpdb->prefix . 'users';
+		
 		$html = '<select name="user_selector" id="user_selector">';
-			foreach ($list as $iter => $val) {
-				$html = $html . '<option value="' . ($iter + 1) . '">' . ($iter + 1) . '</option>';
-			}
+
+		foreach ($list as $iter => $val) {
+
+			// $username = $wpdb->get_results("SELECT `user_nicename` FROM " . $table_name . " WHERE `ID` = " . $val['user_id']);
+			// var_dump($val);
+			// die($username{0}->user_nicename);
+			$html = $html . '<option value="' . $val['ID'] . '">' . $val['user_nicename'] . '</option>';
+		}
+
 		$html = $html . '</select>';
+
 		return $html;
 	}
 

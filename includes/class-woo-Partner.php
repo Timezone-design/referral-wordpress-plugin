@@ -174,8 +174,10 @@ class Woo_Partner {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
-		$plugin_public->woo_Partner_add_shortcode();
+		
+		add_shortcode('woo_partner_ref_access', array('Woo_Partner_Public', 'woo_Partner_shortcode_generator'));
+		// die("shortcode!");
+		// $plugin_public->woo_Partner_add_shortcode();
 		$plugin_public->woo_Partner_user_form_handler();
 
 	}
