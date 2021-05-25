@@ -3,6 +3,15 @@
  * included in this file.
  */
 
- .ref-info .form-table td a {
+.ref-info .form-table td a {
     text-decoration: none;
+}
+
+.ref-info .form-table td {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.edit, .remove {
+    cursor: pointer;
 }

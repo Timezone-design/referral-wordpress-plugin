@@ -99,5 +99,29 @@ class Woo_Partner_Public {
 		wp_enqueue_script( $this->woo_Partner, plugin_dir_url( __FILE__ ) . 'js/woo-Partner-public.js', array( 'jquery' ), $this->version, false );
 
 	}
+	
+	public function woo_Partner_add_shortcode() {
+
+		add_shortcode('woo_partner_ref_access', 'woo_Partner_shortcode_generator');
+
+	}
+
+	public function woo_Partner_shortcode_generator($args) {
+		
+		include_once "partials/woo-Partner-public-display.php";
+
+		return $content;
+	}
+	
+	public function get_referral_link_by_user_id($id)
+	{
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'referral_info';
+		$ref_info = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE user_id = " . $id);
+
+		return $ref_info;
+		
+	}
 
 }

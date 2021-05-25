@@ -152,7 +152,14 @@ class Woo_Partner_Admin {
 
 		global $wpdb;
 
-		$ref_info = $wpdb->get_results("SELECT * FROM `wp_referral_info`");
+		// $ref_info = $wpdb->get_results("SELECT * FROM `wp_referral_info`");
+		$ref_info = $wpdb->get_results(
+			"SELECT a.ID AS user_id, b.id AS ref_id, a.user_nicename, a.display_name, b.referral_link, b.product_link, b.used_times, b.enabled
+			FROM `wp_users` AS a 
+			INNER JOIN `wp_referral_info` AS b
+			ON a.ID = b.user_id
+			ORDER BY a.ID"
+		);
 		return $ref_info;
 	}
 
@@ -160,7 +167,8 @@ class Woo_Partner_Admin {
 
 		global $wpdb;
 
-		$ref_info = $wpdb->get_results("SELECT DISTINCT `user_id` FROM `wp_referral_info` ORDER BY `user_id`");
+		$table_name = $wpdb->prefix . 'referral_info';
+		$ref_info = $wpdb->get_results("SELECT DISTINCT `user_id` FROM " . $table_name . " ORDER BY `user_id`");
 		// die($ref_info);
 		return $ref_info;
 	}
@@ -183,10 +191,33 @@ class Woo_Partner_Admin {
 			global $wpdb;
 			// var_dump($wpdb);
 			// die('ok');
-			$user_id = $_POST["user_selector"];
-			$product_link = $_POST["new_link"];
-			$referral_link = md5($product_link);
-			$wpdb->insert( "wp_referral_info", array("user_id" => $user_id, "referral_link" => $referral_link, "product_link" => $product_link, "used_times" => 0, "enabled" => 1), array("%d", "%s", "%s", "%d", "%d") );
+			if (isset($_POST["edit-ref"]) && $_POST["edit-ref"] + 0 > -1) {
+
+				die("edit");
+				// $sql = $wpdb->prepare( "DELETE FROM "  . $wpdb->prefix . "referral_info WHERE id = " . $_POST["edit-ref"] );
+				// $wpdb->query($sql);
+				// echo "edit!";
+
+			} elseif (isset($_POST["remove-ref"]) && $_POST["remove-ref"] + 0 > -1) {
+				
+				
+				$sql = $wpdb->prepare( "DELETE FROM "  . $wpdb->prefix . "referral_info WHERE id = " . $_POST["remove-ref"] );
+				// die($sql);
+				$wpdb->query($sql);
+
+			} elseif (isset($_POST["new_link"]) && $_POST["new_link"] + 0 > -1) {
+
+				$user_id = $_POST["user_selector"];
+				$product_link = $_POST["new_link"];
+				$referral_link = md5($product_link);
+
+				$sql = $wpdb->prepare( "INSERT INTO " . $wpdb->prefix . "referral_info (user_id, referral_link, product_link, used_times, enabled) VALUES (%d, %s, %s, %d, %d)", $user_id, $referral_link, $product_link, 0, 1 );
+
+				$wpdb->query($sql);
+					
+				// $wpdb->insert( $wpdb->prefix . 'referral_info', array("user_id" => $user_id, "referral_link" => $referral_link, "product_link" => $product_link, "used_times" => 0, "enabled" => 1), array("%d", "%s", "%s", "%d", "%d") );
+			}
+
 			wp_redirect( admin_url('admin.php?page=wooPartner') );
 			exit;
 		}
