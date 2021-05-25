@@ -25,9 +25,12 @@
 
         } else { ?>
 
-            <form class="user-ref-input" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="POST">]
+            <form class="user-ref-input" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="POST">
+                <input type="hidden" name="action" value="custom_user_form_action">
+                <input type="hidden" name="remove-ref" class="remove-ref" value="-1">
+                <input type="hidden" name="current-url" class="current-url" value="-1">
                 
-            <table class="ref-data">
+                <table class="ref-data">
                     <tr>
                         <th>Your referral link ID</th>
                         <th>Your product link(s)</th>
@@ -43,11 +46,7 @@
                             <td><?php echo $data->used_times ?></td>
                             <td><?php echo $data->enabled ?></td>
                             <td>
-                                <!-- <span class="edit" onclick="jQuery('input.edit-ref').val('<?php echo $iter->ref_id ?>'), jQuery('.wc-wooP-form').submit();">
-                                    <div class="dashicons dashicons-edit"></div>
-                                </span>
-                                &nbsp; -->
-                                <span class="remove" onclick="jQuery('input.remove-ref').val('<?php echo $iter->ref_id ?>'), jQuery('.wc-wooP-form').submit();">
+                                <span class="remove" onclick="jQuery('input.remove-ref').val('<?php echo $data->id ?>'), jQuery('input.current-url').val('<?php echo $wp->request ?>'), jQuery('.user-ref-input').submit();">
                                     <div class="dashicons dashicons-trash"></div>
                                 </span>
                             </td>

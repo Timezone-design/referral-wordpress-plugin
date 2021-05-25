@@ -100,18 +100,18 @@ class Woo_Partner_Public {
 
 	}
 	
-	public function woo_Partner_add_shortcode() {
+	// public function woo_Partner_add_shortcode() {
 
-		add_shortcode('woo_partner_ref_access', 'woo_Partner_shortcode_generator');
+	// 	add_shortcode('woo_partner_ref_access', 'woo_Partner_shortcode_generator');
 
-	}
+	// }
 
-	public function woo_Partner_shortcode_generator($args) {
+	// public function woo_Partner_shortcode_generator() {
 		
-		include_once "partials/woo-Partner-public-display.php";
+	// 	include_once "partials/woo-Partner-public-display.php";
 
-		return $content;
-	}
+	// 	return $content;
+	// }
 	
 	public function get_referral_link_by_user_id($id)
 	{
@@ -124,4 +124,25 @@ class Woo_Partner_Public {
 		
 	}
 
+	public function woo_Partner_user_form_handler()
+	{
+		add_action( 'admin_post_nopriv_custom_user_form_action', '_handle_user_form_action' );
+		add_action( 'admin_post_custom_user_form_action', '_handle_user_form_action' );
+
+		function _handle_user_form_action() {
+
+			global $wpdb;
+
+			if (isset($_POST["remove-ref"]) && $_POST["remove-ref"] + 0 > -1) {
+							
+				$sql = $wpdb->prepare( "DELETE FROM "  . $wpdb->prefix . "referral_info WHERE id = " . $_POST["remove-ref"] );
+				// die($sql);
+				$wpdb->query($sql);
+
+			}
+			
+			wp_redirect( admin_url($_POST['current-url']) );
+			exit;
+		}
+	}
 }

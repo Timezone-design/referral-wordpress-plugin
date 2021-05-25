@@ -182,12 +182,12 @@ class Woo_Partner_Admin {
 		return $html;
 	}
 
-	public function woo_Partner_write_referral_url_into_db() {
+	public function woo_Partner_admin_form_handler() {
 
-		add_action( 'admin_post_nopriv_custom_form_action', '_handle_form_action' );
-		add_action( 'admin_post_custom_form_action', '_handle_form_action' );
+		add_action( 'admin_post_nopriv_custom_admin_form_action', '_handle_admin_form_action' );
+		add_action( 'admin_post_custom_admin_form_action', '_handle_admin_form_action' );
 
-		function _handle_form_action() {
+		function _handle_admin_form_action() {
 			global $wpdb;
 			// var_dump($wpdb);
 			// die('ok');

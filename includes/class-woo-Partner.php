@@ -157,7 +157,7 @@ class Woo_Partner {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		$plugin_admin->woo_Partner_write_referral_url_into_db();
+		$plugin_admin->woo_Partner_admin_form_handler();
 
 	}
 
@@ -176,7 +176,8 @@ class Woo_Partner {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 		$plugin_public->woo_Partner_add_shortcode();
-		
+		$plugin_public->woo_Partner_user_form_handler();
+
 	}
 
 	/**
